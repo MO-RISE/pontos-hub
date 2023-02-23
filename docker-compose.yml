@@ -1,0 +1,47 @@
+version: "3.8"
+
+services:
+
+  traefik:
+    image: "traefik:v2.9"
+    restart: unless-stopped
+    command:
+      - "--log.level=DEBUG"
+      - "--api.dashboard=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=true"
+      - "--providers.docker.constraints=Label(`pontos.expose`, `true`)"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.traefik-dashboard.address=:8080"
+      - "--entrypoints.emqx-dashboard.address=:8081"
+    # Dynamic Configuration
+    labels:
+      - "pontos.expose=true"
+      - "traefik.http.routers.traefik-dashboard.rule=(PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
+      - "traefik.http.routers.traefik-dashboard.entryPoints=traefik-dashboard"
+      - "traefik.http.routers.traefik-dashboard.service=api@internal"
+    ports:
+      - "${PONTOS_HUB_EXTERNAL_HTTP_PORT:-80}:80"
+      - "${PONTOS_HUB_EXTERNAL_TRAEFIK_DASHBOARD_PORT:-0}:8080"
+      - "${PONTOS_HUB_EXTERNAL_EMQX_DASHBOARD_PORT:-0}:8081"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  emqx:
+    image: emqx/emqx:4.4.14
+    restart: unless-stopped
+    environment:
+      - EMQX_NAME=pontos-hub
+      - EMQX_HOST=127.0.0.1
+      - EMQX_ALLOW_ANONYMOUS=false
+      - EMQX_ACL_NOMATCH=allow
+    labels:
+      - "pontos.expose=true"
+      - "traefik.http.routers.emqx-ws.rule=PathPrefix(`/mqtt`)"
+      - "traefik.http.routers.emqx-ws.entryPoints=web"
+      - "traefik.http.routers.emqx-ws.service=emqx-ws-service"
+      - "traefik.http.services.emqx-ws-service.loadbalancer.server.port=8083"
+      - "traefik.tcp.routers.emqx-dashboard.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.emqx-dashboard.entryPoints=emqx-dashboard"
+      - "traefik.tcp.routers.emqx-dashboard.service=emqx-dashboard-service"
+      - "traefik.tcp.services.emqx-dashboard-service.loadbalancer.server.port=18083"
