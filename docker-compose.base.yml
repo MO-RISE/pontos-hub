@@ -10,7 +10,8 @@ services:
     # Static configuration of Traefik
     environment:
       # General configuration
-      - TRAEFIK_LOG_LEVEL=ERROR
+      - TRAEFIK_LOG_LEVEL=${PONTOS_TRAEFIK_LOG_LEVEL:-ERROR}
+      - TRAEFIK_ACCESSLOG=${PONTOS_TRAEFIK_ACCESSLOG:-false}
       - TRAEFIK_API_DASHBOARD=true
       - TRAEFIK_PROVIDERS_DOCKER=true
       - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=true
