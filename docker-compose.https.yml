@@ -31,3 +31,5 @@ services:
   emqx:
     labels:
       - "traefik.http.routers.emqx-ws.entryPoints=websecure"
+      - "traefik.http.routers.emqx-ws.rule=Host(`${PONTOS_HUB_HOST}`) && PathPrefix(`/mqtt`)"
+      - "traefik.http.routers.emqx-ws.tls.certresolver=LEresolver"
