@@ -58,8 +58,3 @@ services:
       - "traefik.tcp.routers.emqx-dashboard.entryPoints=emqx-dashboard"
       - "traefik.tcp.routers.emqx-dashboard.service=emqx-dashboard-service"
       - "traefik.tcp.services.emqx-dashboard-service.loadbalancer.server.port=18083"
-
-  # Database (TimescaleDB)
-  db:
-    image: timescale/timescaledb-ha:pg15.2-ts2.9.3-p1
-    restart: unless-stopped
