@@ -21,10 +21,6 @@ services:
       - TRAEFIK_ENTRYPOINTS_traefik-dashboard_ADDRESS=:8080
       - TRAEFIK_ENTRYPOINTS_emqx-dashboard_ADDRESS=:8081
 
-      # Catch-all redirection from http to https
-      - TRAEFIK_ENTRYPOINTS_web_HTTP_REDIRECTIONS_ENTRYPOINT_TO=websecure
-      - TRAEFIK_ENTRYPOINTS_web_HTTP_REDIRECTIONS_ENTRYPOINT_SCHEME=https
-
     # Dynamic configuration for exposing Traefik's dashboard an api on a separate endpoints
     labels:
       - "pontos.expose=true"

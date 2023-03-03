@@ -4,30 +4,6 @@ services:
 
   # Reverse proxy
   traefik:
-    command:
-      - "--log.level=INFO"
-      - "--api.dashboard=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=true"
-      - "--providers.docker.constraints=Label(`pontos.expose`, `true`)"
-
-      # Entrypoints
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.websecure.address=:443"
-      - "--entrypoints.traefik-dashboard.address=:8080"
-      - "--entrypoints.emqx-dashboard.address=:8081"
-
-      # Catch-all redirection from http to https
-      - "--entrypoints.web.http.redirections.entryPoint.to=websecure"
-      - "--entrypoints.web.http.redirections.entryPoint.scheme=https"
-
-      # TLS certificate through Let's Encrypt
-      - "--certificatesresolvers.LEresolver.acme.httpchallenge=true"
-      - "--certificatesresolvers.LEresolver.acme.httpchallenge.entrypoint=web"
-      #      - "--certificatesresolvers.LEresolver.acme.caserver=https://acme-staging-v02.api.letsencrypt.org/directory"
-      - "--certificatesresolvers.LEresolver.acme.email=${PONTOS_HUB_ACME_EMAIL}"
-      - "--certificatesresolvers.LEresolver.acme.storage=/letsencrypt/acme.json"
-
     # Static configuration of Traefik
     environment:
       # Entrypoints
@@ -36,6 +12,14 @@ services:
       # Catch-all redirection from http to https
       - TRAEFIK_ENTRYPOINTS_web_HTTP_REDIRECTIONS_ENTRYPOINT_TO=websecure
       - TRAEFIK_ENTRYPOINTS_web_HTTP_REDIRECTIONS_ENTRYPOINT_SCHEME=https
+
+      # TLS certificate through Let's Encrypt
+      - TRAEFIK_CERTIFICATESRESOLVER_LEresolver=true
+      - TRAEFIK_CERTIFICATESRESOLVER_LEresolver_ACME_EMAIL=${PONTOS_HUB_ACME_EMAIL}
+      - TRAEFIK_CERTIFICATESRESOLVER_LEresolver_ACME_HTTPCHALLENGE=true
+      - TRAEFIK_CERTIFICATESRESOLVER_LEresolver_ACME_HTTPCHALLENGE_ENTRYPOINT=web
+      - TRAEFIK_CERTIFICATESRESOLVER_LEresolver_ACME_STORAGE=/letsencrypt/acme.json
+      #- TRAEFIK_CERTIFICATESRESOLVER_LEresolver_ACME_CASERVER=https://acme-staging-v02.api.letsencrypt.org/directory
 
     ports:
       - "${PONTOS_HUB_EXTERNAL_HTTPS_PORT:-443}:443"
