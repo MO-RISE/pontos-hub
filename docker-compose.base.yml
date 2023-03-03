@@ -2,19 +2,30 @@ version: "3.8"
 
 services:
 
+  # Reverse proxy
   traefik:
     image: "traefik:v2.9"
     restart: unless-stopped
-    command:
-      - "--log.level=DEBUG"
-      - "--api.dashboard=true"
-      - "--providers.docker=true"
-      - "--providers.docker.exposedbydefault=true"
-      - "--providers.docker.constraints=Label(`pontos.expose`, `true`)"
-      - "--entrypoints.web.address=:80"
-      - "--entrypoints.traefik-dashboard.address=:8080"
-      - "--entrypoints.emqx-dashboard.address=:8081"
-    # Dynamic Configuration
+
+    # Static configuration of Traefik
+    environment:
+      # General configuration
+      - TRAEFIK_LOG_LEVEL=ERROR
+      - TRAEFIK_API_DASHBOARD=true
+      - TRAEFIK_PROVIDERS_DOCKER=true
+      - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=true
+      - TRAEFIK_PROVIDERS_DOCKER_CONSTRAINTS="Label(`pontos.expose`, `true`)"
+
+      # Entrypoints
+      - TRAEFIK_ENTRYPOINTS_web_ADDRESS=:80
+      - TRAEFIK_ENTRYPOINTS_traefik-dashboard_ADDRESS=:8080
+      - TRAEFIK_ENTRYPOINTS_emqx-dashboard_ADDRESS=:8081
+
+      # Catch-all redirection from http to https
+      - TRAEFIK_ENTRYPOINTS_web_HTTP_REDIRECTIONS_ENTRYPOINT_TO=websecure
+      - TRAEFIK_ENTRYPOINTS_web_HTTP_REDIRECTIONS_ENTRYPOINT_SCHEME=https
+
+    # Dynamic configuration for exposing Traefik's dashboard an api on a separate endpoints
     labels:
       - "pontos.expose=true"
       - "traefik.http.routers.traefik-dashboard.rule=(PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
@@ -26,7 +37,9 @@ services:
       - "${PONTOS_HUB_EXTERNAL_EMQX_DASHBOARD_PORT:-0}:8081"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./letsencrypt:/letsencrypt"
 
+  # MQTT broker
   emqx:
     image: emqx/emqx:4.4.14
     restart: unless-stopped
@@ -45,3 +58,8 @@ services:
       - "traefik.tcp.routers.emqx-dashboard.entryPoints=emqx-dashboard"
       - "traefik.tcp.routers.emqx-dashboard.service=emqx-dashboard-service"
       - "traefik.tcp.services.emqx-dashboard-service.loadbalancer.server.port=18083"
+
+  # Database (TimescaleDB)
+  db:
+    image: timescale/timescaledb-ha:pg15.2-ts2.9.3-p1
+    restart: unless-stopped
