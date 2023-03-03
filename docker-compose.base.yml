@@ -14,7 +14,7 @@ services:
       - TRAEFIK_API_DASHBOARD=true
       - TRAEFIK_PROVIDERS_DOCKER=true
       - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=true
-      - TRAEFIK_PROVIDERS_DOCKER_CONSTRAINTS="Label(`pontos.expose`, `true`)"
+      - TRAEFIK_PROVIDERS_DOCKER_CONSTRAINTS=Label(`pontos.expose`, `true`)
 
       # Entrypoints
       - TRAEFIK_ENTRYPOINTS_web_ADDRESS=:80
