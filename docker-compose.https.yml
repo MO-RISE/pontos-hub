@@ -26,3 +26,8 @@ services:
 
     volumes:
       - "./letsencrypt:/letsencrypt"
+
+  # MQTT broker
+  emqx:
+    labels:
+      - "traefik.http.routers.emqx-ws.entryPoints=websecure"
