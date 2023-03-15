@@ -22,7 +22,7 @@ services:
       - TRAEFIK_ENTRYPOINTS_traefik-dashboard_ADDRESS=:8080
       - TRAEFIK_ENTRYPOINTS_emqx-dashboard_ADDRESS=:8081
 
-    # Dynamic configuration for exposing Traefik's dashboard an api on a separate endpoints
+    # Dynamic configuration for exposing Traefik's dashboard an api on separate endpoints
     labels:
       - "pontos.expose=true"
       - "traefik.http.routers.traefik-dashboard.rule=(PathPrefix(`/api`) || PathPrefix(`/dashboard`))"
@@ -30,22 +30,20 @@ services:
       - "traefik.http.routers.traefik-dashboard.service=api@internal"
     ports:
       - "${PONTOS_HUB_HTTP_PORT:-80}:80"
-      - "${PONTOS_TRAEFIK_DASHBOARD_PORT:-0}:8080"
-      - "${PONTOS_EMQX_DASHBOARD_PORT:-0}:8081"
+      - "${PONTOS_TRAEFIK_DASHBOARD_PORT:-8080}:8080"
+      - "${PONTOS_EMQX_DASHBOARD_PORT:-8081}:8081"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
   # MQTT broker
   emqx:
-    image: emqx/emqx:4.4.14
+    image: emqx/emqx:5.0.20
     restart: unless-stopped
     environment:
       - EMQX_NAME=pontos-hub
       - EMQX_HOST=127.0.0.1
-      - EMQX_ALLOW_ANONYMOUS=false
+      - EMQX_ALLOW_ANONYMOUS=true
       - EMQX_ACL_NOMATCH=allow
-      - EMQX_DASHBOARD__DEFAULT_USER__LOGIN=${PONTOS_EMQX_DASHBOARD_USERNAME}
-      - EMQX_DASHBOARD__DEFAULT_USER__PASSWORD=${PONTOS_EMQX_DASHBOARD_PASSWORD}
     labels:
       - "pontos.expose=true"
       - "traefik.http.routers.emqx-ws.rule=PathPrefix(`/mqtt`)"
@@ -56,3 +54,8 @@ services:
       - "traefik.tcp.routers.emqx-dashboard.entryPoints=emqx-dashboard"
       - "traefik.tcp.routers.emqx-dashboard.service=emqx-dashboard-service"
       - "traefik.tcp.services.emqx-dashboard-service.loadbalancer.server.port=18083"
+    volumes:
+      - vol-emqx-data:/opt/emqx/data
+
+volumes:
+  vol-emqx-data:
