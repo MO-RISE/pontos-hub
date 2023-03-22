@@ -15,6 +15,6 @@ ALTER DEFAULT PRIVILEGES FOR USER pontos_user IN SCHEMA api_views GRANT SELECT O
 
 
 -- Create authenticator role for postgrest connection and make sure it can morph into the other roles
-CREATE ROLE authenticator noinherit LOGIN PASSWORD 'authenticator-password';
+CREATE ROLE authenticator noinherit LOGIN PASSWORD '${AUTHENTICATOR_PASSWORD}';
 GRANT web_anon TO authenticator;
 GRANT web_user TO authenticator;
