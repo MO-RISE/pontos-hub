@@ -59,10 +59,11 @@ services:
 
   # Database
   db:
-    image: timescale/timescaledb:2.10.1-pg15
+    build:
+      context: ./database
     environment:
       POSTGRES_DB: pontos
-      POSTGRES_USER: pontos-user
+      POSTGRES_USER: pontos_user
       POSTGRES_PASSWORD: ${PONTOS_DB_PASSWORD}
     volumes:
       - vol-pg-data:/var/lib/postgresql/data
@@ -71,8 +72,10 @@ services:
   api:
     image: postgrest/postgrest:v10.1.2
     environment:
-      - PGRST_DB_URI=postgres://pontos-user:${PONTOS_DB_PASSWORD}@db:5432/pontos
+      - PGRST_DB_URI=postgres://authenticator:authenticator-password@db:5432/pontos
       - PGRST_OPENAPI_SERVER_PROXY_URI=http://127.0.0.1:3000
+      - PGRST_DB_SCHEMAS=vessel_data
+      - PGRST_DB_ANON_ROLE=web_anon
     depends_on:
       - db
     labels:
