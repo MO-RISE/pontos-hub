@@ -33,3 +33,19 @@ services:
       - "traefik.http.routers.emqx-ws.entryPoints=websecure"
       - "traefik.http.routers.emqx-ws.rule=Host(`${PONTOS_HOST}`) && PathPrefix(`/mqtt`)"
       - "traefik.http.routers.emqx-ws.tls.certresolver=leresolver"
+
+  # REST api
+  api:
+    environment:
+      - PGRST_OPENAPI_SERVER_PROXY_URI=http://${PONTOS_HOST}/api
+    labels:
+      - "traefik.http.routers.postgrests.entryPoints=websecure"
+      - "traefik.http.routers.postgrest.rule=Host(`${PONTOS_HOST}`) && PathPrefix(`/api`)"
+      - "traefik.http.routers.postgrest.tls.certresolver=leresolver"
+
+  # REST api
+  swagger:
+    labels:
+      - "traefik.http.routers.swagger.entryPoints=websecure"
+      - "traefik.http.routers.swagger.rule=Host(`${PONTOS_HOST}`) && PathPrefix(`/docs`)"
+      - "traefik.http.routers.swagger.tls.certresolver=leresolver"

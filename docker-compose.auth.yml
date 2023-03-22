@@ -1,0 +1,8 @@
+version: "3.8"
+
+services:
+
+  # REST api
+  api:
+    environment:
+      - PGRST_DB_ANON_ROLE= # Disable anonymuous access by providing an empty value here
