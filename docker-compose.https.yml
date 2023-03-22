@@ -36,6 +36,8 @@ services:
 
   # REST api
   api:
+    environment:
+      - PGRST_OPENAPI_SERVER_PROXY_URI=http://${PONTOS_HOST}/api
     labels:
       - "traefik.http.routers.postgrests.entryPoints=websecure"
       - "traefik.http.routers.postgrest.rule=Host(`${PONTOS_HOST}`) && PathPrefix(`/api`)"
