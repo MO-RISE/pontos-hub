@@ -18,3 +18,6 @@ ALTER DEFAULT PRIVILEGES FOR USER pontos_user IN SCHEMA api_views GRANT SELECT O
 CREATE ROLE authenticator noinherit LOGIN PASSWORD '${AUTHENTICATOR_PASSWORD}';
 GRANT web_anon TO authenticator;
 GRANT web_user TO authenticator;
+
+-- 
+CREATE VIEW api_views.vessel_ids AS (SELECT DISTINCT vessel_id FROM vessel_data.master);
