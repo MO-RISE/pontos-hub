@@ -15,7 +15,13 @@
         80,
         8080,
         8081
-    ]
+    ],
+    // For easy development setup
+    "containerEnv": {
+        "PONTOS_DB_PASSWORD": "password",
+        "PONTOS_TRAEFIK_LOG_LEVEL": "DEBUG",
+        "PONTOS_TRAEFIK_ACCESSLOG": "true"
+    }
     // Use 'postCreateCommand' to run commands after the container is created.
     // "postCreateCommand": "uname -a",
     // Configure tool-specific properties.
