@@ -25,7 +25,7 @@ services:
       - "${PONTOS_HUB_HTTPS_PORT:-443}:443"
 
     volumes:
-      - "./letsencrypt:/letsencrypt"
+      - vol-traefik-letsencrypt:/letsencrypt
 
   # MQTT broker
   emqx:
@@ -49,3 +49,6 @@ services:
       - "traefik.http.routers.swagger.entryPoints=websecure"
       - "traefik.http.routers.swagger.rule=Host(`${PONTOS_HOST}`) && PathPrefix(`/docs`)"
       - "traefik.http.routers.swagger.tls.certresolver=leresolver"
+
+volumes:
+  vol-traefik-letsencrypt:
