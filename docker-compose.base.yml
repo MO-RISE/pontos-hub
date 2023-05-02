@@ -93,6 +93,8 @@ services:
       - "traefik.http.routers.postgrest.service=postgrest-service"
       - "traefik.http.services.postgrest-service.loadbalancer.server.port=3000"
       - "traefik.http.middlewares.postgrest-stripprefix.stripprefix.prefixes=/api"
+      - "traefik.http.middlewares.postgrest-ratelimit.ratelimit.average=1"
+      - "traefik.http.middlewares.postgrest-ratelimit.ratelimit.period=10s"
       - "traefik.http.routers.postgrest.middlewares=postgrest-stripprefix@docker"
 
   # Swagger api docs
