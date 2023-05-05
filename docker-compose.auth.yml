@@ -2,7 +2,29 @@ version: "3.8"
 
 services:
 
+  # Broker
+  emqx:
+    environment:
+      # Applying authn/authz only to the websocket listener as that is the only one publicly exposed
+      - EMQX_LISTENERS__WS__DEFAULT__ENABLE_AUTHN=true
+      - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__ENABLE=true
+      - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__MECHANISM=jwt
+      - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__ALGORITHM=hmac-based
+      - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__USE_JWKS=false
+      - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__SECRET=${PONTOS_JWT_SECRET}
+      - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__SECRET_BASE64_ENCODED=false
+
+      # Authorization must be global
+      - EMQX_AUTHORIZATION__NO_MATCH=deny
+      - EMQX_AUTHORIZATION__DENY_ACTION=disconnect
+    volumes:
+      - ./broker/acl.conf:/opt/emqx/etc/acl.conf
+
   # REST api
   api:
     environment:
-      - PGRST_DB_ANON_ROLE= # Disable anonymuous access by providing an empty value here
+      - PGRST_DB_ANON_ROLE=web_anon # Does NOT have read permissions!
+      - PGRST_OPENAPI_MODE=ignore-privileges # But we anyway show docs for the full API
+      - PGRST_OPENAPI_SECURITY_ACTIVE=true # And allow to manually input a JWT
+      - PGRST_JWT_SECRET=${PONTOS_JWT_SECRET}
+      - PGRST_JWT_SECRET_IS_BASE64=false

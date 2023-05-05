@@ -20,10 +20,10 @@
     "containerEnv": {
         "PONTOS_DB_PASSWORD": "password",
         "PONTOS_TRAEFIK_LOG_LEVEL": "DEBUG",
-        "PONTOS_TRAEFIK_ACCESSLOG": "true"
-    }
+        "PONTOS_EMQX_LOG_LEVEL": "debug"
+    },
     // Use 'postCreateCommand' to run commands after the container is created.
-    // "postCreateCommand": "uname -a",
+    "postCreateCommand": "bash .devcontainer/install-utility-scripts.sh"
     // Configure tool-specific properties.
     // "customizations": {},
     // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
