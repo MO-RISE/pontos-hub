@@ -50,6 +50,15 @@ For some basic example scripts to publish data to the MQTT interface, see the [e
 
 See https://github.com/MO-RISE/pontos-data-ingestor
 
-## Auth solution
-(WIP)
+## Authentication and Authorization
+Authentication is performed using JWT tokens by:
+* PostgREST (for reuqests to the API)
+* EMQX (for connections to the MQTT broker)
+respectively.
 
+The reverse proxy (Traefik) does not perform any form of auth (nether authentcation nor authorization)
+
+Example of creating a valid JWT token that includes a role for PostgREST and a specific acl configuration for EMQX:
+```
+jwt encode --exp=1w --secret=<your_secret> '{"role": "web_user", "acl": {"pub": ["PONTOS/<vessel_id>/<parameter_id>/+"]}}'
+```
