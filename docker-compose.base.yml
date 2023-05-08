@@ -11,7 +11,7 @@ services:
     environment:
       # General configuration
       - TRAEFIK_LOG_LEVEL=${PONTOS_TRAEFIK_LOG_LEVEL:-ERROR}
-      - TRAEFIK_ACCESSLOG=${PONTOS_TRAEFIK_ACCESSLOG:-false}
+      - TRAEFIK_ACCESSLOG=true
       - TRAEFIK_API_DASHBOARD=true
       - TRAEFIK_PROVIDERS_DOCKER=true
       - TRAEFIK_PROVIDERS_DOCKER_EXPOSEDBYDEFAULT=true
@@ -42,9 +42,9 @@ services:
     environment:
       - EMQX_NAME=pontos-hub
       - EMQX_HOST=127.0.0.1
-      - EMQX_ALLOW_ANONYMOUS=true
-      - EMQX_ACL_NOMATCH=allow
       - EMQX_RETAINER__BACKEND__STORAGE_TYPE=disc
+      - EMQX_LOG__CONSOLE_HANDLER__ENABLE=true
+      - EMQX_LOG__CONSOLE_HANDLER__LEVEL=${PONTOS_EMQX_LOG_LEVEL:-warning}
     labels:
       - "pontos.expose=true"
       - "traefik.http.routers.emqx-ws.rule=PathPrefix(`/mqtt`)"
@@ -77,13 +77,13 @@ services:
 
   # REST api
   api:
-    image: postgrest/postgrest:v10.1.2
+    image: postgrest/postgrest:v10.2.0
     restart: unless-stopped
     environment:
       - PGRST_DB_URI=postgres://authenticator:${PONTOS_DB_PASSWORD}@db:5432/pontos
       - PGRST_OPENAPI_SERVER_PROXY_URI=http://localhost/api
       - PGRST_DB_SCHEMAS=api_views
-      - PGRST_DB_ANON_ROLE=web_anon
+      - PGRST_DB_ANON_ROLE=web_user # Has read permissions!
     depends_on:
       - db
     labels:
@@ -93,6 +93,8 @@ services:
       - "traefik.http.routers.postgrest.service=postgrest-service"
       - "traefik.http.services.postgrest-service.loadbalancer.server.port=3000"
       - "traefik.http.middlewares.postgrest-stripprefix.stripprefix.prefixes=/api"
+      - "traefik.http.middlewares.postgrest-ratelimit.ratelimit.average=1"
+      - "traefik.http.middlewares.postgrest-ratelimit.ratelimit.period=10s"
       - "traefik.http.routers.postgrest.middlewares=postgrest-stripprefix@docker"
 
   # Swagger api docs
