@@ -20,7 +20,8 @@
     "containerEnv": {
         "PONTOS_DB_PASSWORD": "password",
         "PONTOS_TRAEFIK_LOG_LEVEL": "DEBUG",
-        "PONTOS_EMQX_LOG_LEVEL": "debug"
+        "PONTOS_EMQX_LOG_LEVEL": "debug",
+        "PONTOS_JWT_SECRET": "dev_jwt_secret_do_not_use_in_production!"
     },
     // Use 'postCreateCommand' to run commands after the container is created.
     "postCreateCommand": "bash .devcontainer/install-utility-scripts.sh"
