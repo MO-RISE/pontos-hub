@@ -18,5 +18,5 @@ RUN wget -q -O - https://github.com/msoap/shell2http/releases/download/v1.16.0/s
 # Install jwt-cli
 RUN wget -q -O - https://github.com/mike-engel/jwt-cli/releases/download/5.0.3/jwt-linux.tar.gz | tar xvz -C /usr/local/bin jwt
 
-ADD --chmod=+x generate_jwt.sh generate_jwt.sh
-CMD ["shell2http", "--500", "--form", "--export-all-vars", "POST:/", "./generate_jwt.sh"]
+ADD --chmod=a+x issue_jwt.sh issue_jwt.sh
+CMD ["shell2http", "--500", "--form", "--export-all-vars", "POST:/", "./issue_jwt.sh"]
