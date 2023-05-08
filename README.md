@@ -16,13 +16,9 @@ To start the datahub in base mode (no TLS, no auth):
 
 `docker compose -f docker-compose.base.yml up -d`
 
-To start the datahub with automatically generated TLS certificates (no auth):
+To start the datahub with auth and TLS support:
 
-`docker compose -f docker-compose.base.yml -f docker-compose.https.yml up -d`
-
-(WIP) To start the datahub with automatically generated TLS certificates and authentication:
-
-`docker compose -f docker-compose.base.yml -f docker-compose.https.yml -f docker-compose.auth.yml up -d`
+`docker compose -f docker-compose.base.yml -f docker-compose.auth.yml -f docker-compose.https.yml up -d`
 
 ## Database
 

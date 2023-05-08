@@ -50,5 +50,12 @@ services:
       - "traefik.http.routers.swagger.rule=Host(`${PONTOS_HOST}`) && PathPrefix(`/docs`)"
       - "traefik.http.routers.swagger.tls.certresolver=leresolver"
 
+  # JWT issuer
+  jwt:
+    labels:
+      - "traefik.http.routers.jwt.entryPoints=websecure"
+      - "traefik.http.routers.jwt.rule=Host(`${PONTOS_HOST}`) && PathPrefix(`/token`)"
+      - "traefik.http.routers.jwt.tls.certresolver=leresolver"
+
 volumes:
   vol-traefik-letsencrypt:
