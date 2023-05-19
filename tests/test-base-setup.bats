@@ -3,6 +3,10 @@
 load "./bats-helpers/bats-support/load"
 load "./bats-helpers/bats-assert/load"
 
+# The base setup is started before any test is executed and tore down after the
+# last test finishes. In other words, all tests in this file run against the same
+# base instance.
+
 setup_file() {
     docker pull hivemq/mqtt-cli
     docker compose -f docker-compose.base.yml up -d
