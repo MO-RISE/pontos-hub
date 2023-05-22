@@ -11,8 +11,9 @@ services:
       - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__MECHANISM=jwt
       - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__ALGORITHM=hmac-based
       - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__USE_JWKS=false
-      - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__SECRET=${PONTOS_JWT_SECRET}
+      - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__SECRET="${PONTOS_JWT_SECRET}"
       - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__SECRET_BASE64_ENCODED=false
+      - EMQX_LISTENERS__WS__DEFAULT__AUTHENTICATION__1__VERIFY_CLAIMS={sub:"$${username}"}
 
       # Authorization must be global
       - EMQX_AUTHORIZATION__NO_MATCH=deny
@@ -38,6 +39,7 @@ services:
       - JWT_EXPIRY=1w
       - JWT_SECRET=${PONTOS_JWT_SECRET}
       - JWT_CLAIM_role=web_user
+      - JWT_CLAIM_sub=__token__
       # Empty value to make sure we overwrite anything that comes through shell2http
       - JWT_CLAIM_acl=
     labels:
