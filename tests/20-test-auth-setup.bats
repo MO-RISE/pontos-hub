@@ -74,6 +74,10 @@ teardown_file() {
     assert_equal "$field" '"value2"'
 
     # Check that field with the name acl gets overwritten appropriately
+    field=$(echo "$jwt_as_json" | jq .payload.sub)
+    assert_equal "$field" '"__token__"'
+
+    # Check that field with the name acl gets overwritten appropriately
     field=$(echo "$jwt_as_json" | jq .payload.acl)
     assert_equal "$field" '""'
 }
@@ -122,6 +126,10 @@ teardown_file() {
     run timeout --preserve-status 5s docker run --network='host' hivemq/mqtt-cli:4.15.0 sub -v -h localhost -p 80 -u '__token__' -pw "$token" -ws -ws:path mqtt -t PONTOS/#
     assert_line --partial 'received CONNACK MqttConnAck{reasonCode=SUCCESS'
     assert_line --partial 'received SUBACK MqttSubAck{reasonCodes=[GRANTED_QOS_2]'
+
+    # But, if we give the wrong username, we should not be allowed access
+    run timeout --preserve-status 5s docker run --network='host' hivemq/mqtt-cli:4.15.0 sub -v -h localhost -p 80 -u 'wrong' -pw "$token" -ws -ws:path mqtt -t anything/anything/#
+    assert_line --partial 'DISCONNECTED CONNECT failed as CONNACK contained an Error Code: BAD_USER_NAME_OR_PASSWORD.'
 }
 
 @test "AUTH: mqtt publish access" {
@@ -141,7 +149,7 @@ teardown_file() {
     assert_line --partial 'DISCONNECTED Server closed connection without DISCONNECT.'
 
     # Lets generate a token by ourselves to try out that publish acl works
-    token=$(jwt encode --secret="$PONTOS_JWT_SECRET" '{"acl":{"pub": ["anything/anything"]}}')
+    token=$(jwt encode --sub=__token__ --secret="$PONTOS_JWT_SECRET" '{"acl":{"pub": ["anything/anything"]}}')
 
     # Now, both connection and publish should be ok
     run docker run --network='host' hivemq/mqtt-cli:4.15.0 pub -v -h localhost -p 80 -u '__token__' -pw "$token" -ws -ws:path mqtt -t anything/anything -m "Hello World!"
@@ -155,7 +163,7 @@ teardown_file() {
 @test "AUTH: mqtt ingestion" {
 
     # Lets generate a token by ourselves so that we are allowed to publish
-    token=$(jwt encode --secret="$PONTOS_JWT_SECRET" '{"acl":{"pub": ["PONTOS/test_vessel/test_parameter"]}}')
+    token=$(jwt encode --sub=__token__ --secret="$PONTOS_JWT_SECRET" '{"acl":{"pub": ["PONTOS/test_vessel/test_parameter"]}}')
 
     # Publish an actual payload that should be picked up by the ingestor and check that it gets written to the database
     run docker run --network='host' hivemq/mqtt-cli:4.15.0 pub -v -h localhost -p 80 -u '__token__' -pw "$token" -ws -ws:path mqtt -t PONTOS/test_vessel/test_parameter -m '{"timestamp": 12345678, "value": 42}'
