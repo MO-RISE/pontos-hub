@@ -38,6 +38,8 @@ services:
       - JWT_EXPIRY=1w
       - JWT_SECRET=${PONTOS_JWT_SECRET}
       - JWT_CLAIM_role=web_user
+      # Empty value to make sure we overwrite anything that comes through shell2http
+      - JWT_CLAIM_acl=
     labels:
       - "pontos.expose=true"
       - "traefik.http.routers.jwt.rule=PathPrefix(`/token`)"
