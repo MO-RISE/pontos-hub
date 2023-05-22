@@ -11,9 +11,8 @@ jsonify_prefixed_variables() {
 
     # Loop over extracted variables
     while read -r var; do
-        # Extract the key (by removing the  prefix)
+        # Extract the key (by removing the prefix)
         key="${var/"$prefix"/""}"
-        # key=$(echo "$var" | sed "s/^${prefix}//")
         # and the value
         value=$(printenv "$var")
 
