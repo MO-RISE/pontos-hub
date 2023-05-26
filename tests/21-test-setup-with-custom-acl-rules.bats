@@ -19,7 +19,7 @@ teardown() {
     original_rules=$(cat broker/acl.conf)
 
     # Generate some  new rules
-    custom_rules=$(bash scripts/generate_publish_acl_rules.sh -u test_user -v test_vessel -p test_parameter)
+    custom_rules=$(bash scripts/generate_publish_acl_rules.sh -t PONTOS -s /+ -u test_user -v test_vessel -p test_parameter)
 
     # Prepend and replace original conf file
     (echo "$custom_rules"; echo "$original_rules") > broker/acl.conf
@@ -34,7 +34,7 @@ teardown() {
     token=$(jwt encode --sub=test_user --secret="$PONTOS_JWT_SECRET")
 
     # Publish an actual payload that should be picked up by the ingestor and check that it gets written to the database
-    run docker run --network='host' hivemq/mqtt-cli:4.15.0 pub -v -h localhost -p 80 -u 'test_user' -pw "$token" -ws -ws:path mqtt -t PONTOS/test_vessel/test_parameter -m '{"timestamp": 12345678, "value": 42}'
+    run docker run --network='host' hivemq/mqtt-cli:4.15.0 pub -v -h localhost -p 80 -u 'test_user' -pw "$token" -ws -ws:path mqtt -t PONTOS/test_vessel/test_parameter/1 -m '{"timestamp": 12345678, "value": 42}'
     assert_line --partial 'received CONNACK MqttConnAck{reasonCode=SUCCESS'
     assert_line --partial 'received PUBLISH acknowledgement'
     # And we should not be kicked out!
