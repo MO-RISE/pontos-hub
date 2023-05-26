@@ -60,7 +60,7 @@ teardown_file() {
 
 @test "BASE: mqtt ingestion" {
     # Publish an actual payload that should be picked up by the ingestor and check that it gets written to the database
-    run docker run --network='host' hivemq/mqtt-cli:4.15.0 pub -v -h localhost -p 80 -ws -ws:path mqtt -t PONTOS/test_vessel/test_parameter -m '{"timestamp": 12345678, "value": 42}'
+    run docker run --network='host' hivemq/mqtt-cli:4.15.0 pub -v -h localhost -p 80 -ws -ws:path mqtt -t PONTOS/test_vessel/test_parameter/1 -m '{"timestamp": 12345678, "value": 42}'
     assert_line --partial 'received PUBLISH acknowledgement'
 
     sleep 6

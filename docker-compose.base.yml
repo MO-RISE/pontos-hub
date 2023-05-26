@@ -115,12 +115,17 @@ services:
 
   # Data ingestor
   ingestor:
-    image: ghcr.io/mo-rise/pontos-data-ingestor:v0.0.2
+    image: ghcr.io/mo-rise/pontos-data-ingestor:v0.1.0
     restart: unless-stopped
     environment:
       - MQTT_BROKER_HOST=emqx
       - MQTT_BROKER_PORT=1883
-      - MQTT_BASE_TOPIC=PONTOS/#
+      - MQTT_CLEAN_START=False
+      - MQTT_SESSION_EXPIRY_INTERVAL=360
+      - MQTT_SUBSCRIBE_TOPIC=PONTOS/+/+/+
+      - MQTT_SUBSCRIBE_TOPIC_QOS=1
+      - TOPIC_PARSER_FORMAT=PONTOS/{vessel_id:w}/{tag:w}/{index:d}
+      - PAYLOAD_MAP_FORMAT=timestamp=timestamp,value=value
       - PG_CONNECTION_STRING=postgres://pontos_user:${PONTOS_DB_PASSWORD}@db:5432/pontos
       - PG_TABLE_NAME=vessel_data.master
       - PG_POOL_SIZE=3
