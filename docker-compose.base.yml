@@ -43,6 +43,7 @@ services:
       - EMQX_NAME=pontos-hub
       - EMQX_HOST=127.0.0.1
       - EMQX_RETAINER__BACKEND__STORAGE_TYPE=disc
+      - EMQX_MQTT__UPGRADE_QOS=true
       - EMQX_LOG__CONSOLE_HANDLER__ENABLE=true
       - EMQX_LOG__CONSOLE_HANDLER__LEVEL=${PONTOS_EMQX_LOG_LEVEL:-warning}
     labels:
