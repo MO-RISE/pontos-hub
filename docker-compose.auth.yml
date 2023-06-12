@@ -34,6 +34,7 @@ services:
   jwt:
     build:
       context: ./auth
+    restart: unless-stopped
     environment:
       - JWT_ISSUER="pontos-hub"
       - JWT_EXPIRY=1w
