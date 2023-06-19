@@ -47,7 +47,7 @@ services:
   swagger:
     labels:
       - "traefik.http.routers.swagger.entryPoints=websecure"
-      - "traefik.http.routers.swagger.rule=Host(`${PONTOS_HOST}`) && PathPrefix(`/docs`)"
+      - "traefik.http.routers.swagger.rule=Host(`${PONTOS_HOST}`) && PathPrefix(`/api/docs`)"
       - "traefik.http.routers.swagger.tls.certresolver=leresolver"
 
   # JWT issuer
