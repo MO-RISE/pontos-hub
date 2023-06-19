@@ -84,7 +84,7 @@ services:
 
   # REST api
   api:
-    image: postgrest/postgrest:v10.2.0
+    image: postgrest/postgrest:v11.1.0
     restart: unless-stopped
     environment:
       - PGRST_DB_URI=postgres://authenticator:${PONTOS_DB_PASSWORD}@db:5432/pontos
@@ -110,12 +110,12 @@ services:
     restart: unless-stopped
     environment:
       - API_URL=/api
-      - BASE_URL=/docs
+      - BASE_URL=/api/docs
     depends_on:
       - api
     labels:
       - "pontos.expose=true"
-      - "traefik.http.routers.swagger.rule=PathPrefix(`/docs`)"
+      - "traefik.http.routers.swagger.rule=PathPrefix(`/api/docs`)"
       - "traefik.http.routers.swagger.entryPoints=web"
       - "traefik.http.routers.swagger.service=swagger-service"
       - "traefik.http.services.swagger-service.loadbalancer.server.port=8080"

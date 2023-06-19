@@ -36,7 +36,7 @@ teardown_file() {
 
     # Same here, we should still have access to the docs.
 
-    run curl -vv --location --silent localhost/docs
+    run curl -vv --location --silent localhost/api/docs
 
     assert_equal "$status" 0
     assert_output --partial '200 OK'
