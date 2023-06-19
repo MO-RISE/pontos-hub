@@ -76,11 +76,13 @@ services:
     volumes:
       # Data volume
       - vol-pg-data:/var/lib/postgresql/data
-      # Initialization scripts
-      - ./database/docker-entrypoint-initdb.d/010-pontos-setup.sql:/docker-entrypoint-initdb.d/010-pontos-setup.sql
-      - ./database/docker-entrypoint-initdb.d/011-pontos-example-data.sql:/docker-entrypoint-initdb.d/011-pontos-example-data.sql
-      - ./database/docker-entrypoint-initdb.d/012-pontos-postgrest-setup.sql:/docker-entrypoint-initdb.d/012-pontos-postgrest-setup.sql
-      - ./database/docker-entrypoint-initdb.d/013-pontos-postgrest-authenticator-setup.sh:/docker-entrypoint-initdb.d/013-pontos-postgrest-authenticator-setup.sh
+      # Custom entrypoint
+      - ./database/custom-entrypoint.sh:/usr/local/bin/custom-entrypoint.sh
+      # Initialization scripts (run on first start)
+      - ./database/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
+      # Initialization scripts (run on every start!)
+      - ./database/always-initdb.d/:/always-initdb.d/
+    entrypoint: "custom-entrypoint.sh"
 
   # REST api
   api:
