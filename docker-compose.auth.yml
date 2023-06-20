@@ -49,3 +49,9 @@ services:
       - "traefik.http.routers.jwt.entryPoints=web"
       - "traefik.http.middlewares.jwt-stripprefix.stripprefix.prefixes=/token"
       - "traefik.http.routers.jwt.middlewares=jwt-stripprefix@docker"
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
