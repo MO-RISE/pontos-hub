@@ -4,7 +4,7 @@ services:
 
   # Reverse proxy
   traefik:
-    image: "traefik:v2.9"
+    image: "traefik:v2.10.1"
     restart: unless-stopped
 
     # Static configuration of Traefik
@@ -35,9 +35,15 @@ services:
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
 
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
   # MQTT broker
   emqx:
-    image: emqx/emqx:5.0.20
+    image: emqx/emqx:5.1.0
     restart: unless-stopped
     environment:
       - EMQX_NAME=pontos-hub
@@ -65,9 +71,15 @@ services:
     volumes:
       - vol-emqx-data:/opt/emqx/data
 
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
   # Database
   db:
-    image: timescale/timescaledb:2.10.1-pg15
+    image: timescale/timescaledb:2.11.0-pg15
     restart: unless-stopped
     environment:
       POSTGRES_DB: pontos
@@ -83,6 +95,12 @@ services:
       # Initialization scripts (run on every start!)
       - ./database/always-initdb.d/:/always-initdb.d/
     entrypoint: "custom-entrypoint.sh"
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
   # REST api
   api:
@@ -106,9 +124,15 @@ services:
       - "traefik.http.middlewares.postgrest-ratelimit.ratelimit.period=10s"
       - "traefik.http.routers.postgrest.middlewares=postgrest-stripprefix@docker"
 
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
   # Swagger api docs
   swagger:
-    image: swaggerapi/swagger-ui:v4.18.1
+    image: swaggerapi/swagger-ui:v5.1.0
     restart: unless-stopped
     environment:
       - API_URL=/api
@@ -122,9 +146,15 @@ services:
       - "traefik.http.routers.swagger.service=swagger-service"
       - "traefik.http.services.swagger-service.loadbalancer.server.port=8080"
 
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
   # Data ingestor
   ingestor:
-    image: ghcr.io/mo-rise/pontos-data-ingestor:v0.1.0
+    image: ghcr.io/mo-rise/pontos-data-ingestor:v0.1.1
     restart: unless-stopped
     environment:
       - MQTT_BROKER_HOST=emqx
@@ -140,9 +170,16 @@ services:
       - PG_POOL_SIZE=3
       - PARTITION_SIZE=1000
       - PARTITION_TIMEOUT=5
+      - DISCARD_NULL_VALUES=true
     depends_on:
       - emqx
       - db
+
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
 
 volumes:
   vol-emqx-data:
