@@ -159,10 +159,10 @@ services:
     environment:
       - MQTT_BROKER_HOST=emqx
       - MQTT_BROKER_PORT=1883
-      - MQTT_CLEAN_START=False
-      - MQTT_SESSION_EXPIRY_INTERVAL=360
-      - MQTT_SUBSCRIBE_TOPIC=PONTOS/+/+/+
-      - MQTT_SUBSCRIBE_TOPIC_QOS=1
+      - MQTT_CLIENT_ID=
+      - MQTT_CLEAN_START=True
+      - MQTT_SUBSCRIBE_TOPIC=$$share/ingestors/PONTOS/+/+/+
+      - MQTT_SUBSCRIBE_TOPIC_QOS=0
       - TOPIC_PARSER_FORMAT=PONTOS/{vessel_id:w}/{tag:w}/{index:d}
       - PAYLOAD_MAP_FORMAT=timestamp=timestamp,value=value
       - PG_CONNECTION_STRING=postgres://pontos_user:${PONTOS_DB_PASSWORD}@db:5432/pontos
@@ -174,6 +174,10 @@ services:
     depends_on:
       - emqx
       - db
+
+    deploy:
+      mode: replicated
+      replicas: 3
 
     logging:
       driver: json-file
