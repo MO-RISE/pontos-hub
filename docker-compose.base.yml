@@ -53,8 +53,9 @@ services:
       # Allow for subscribers to upgrade QoS, this removes the requirement on publishers to use QoS > 0
       - EMQX_MQTT__UPGRADE_QOS=true
       # Rate limit the total number of published messages on the ws listener
-      - EMQX_LISTENERS__WS__DEFAULT__LIMITER__MESSAGE_IN__RATE=2000/s
-      - EMQX_LISTENERS__WS__DEFAULT__LIMITER__MESSAGE_IN__CAPACITY=500
+      - EMQX_LISTENERS__WS__DEFAULT__MESSAGES_RATE=4000/s
+      # Avoid queuing QoS0 messages
+      - EMQX_MQTT__MQUEUE_STORE_QOS0=false
       # Configure logging
       - EMQX_LOG__CONSOLE_HANDLER__ENABLE=true
       - EMQX_LOG__CONSOLE_HANDLER__LEVEL=${PONTOS_EMQX_LOG_LEVEL:-warning}
