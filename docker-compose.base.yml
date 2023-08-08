@@ -52,8 +52,8 @@ services:
       - EMQX_RETAINER__BACKEND__STORAGE_TYPE=disc
       # Do NOT allow for subscribers to upgrade QoS
       - EMQX_MQTT__UPGRADE_QOS=false
-      # Rate limit the total number of published messages on the ws listener
-      - EMQX_LISTENERS__WS__DEFAULT__MESSAGES_RATE="4000/s"
+      # Rate limit the number of published messages per client on the ws listener
+      - EMQX_LISTENERS__WS__DEFAULT__MESSAGES_RATE="1000/s"
       # Avoid queuing QoS0 messages
       - EMQX_MQTT__MQUEUE_STORE_QOS0=false
       # Configure logging
