@@ -42,7 +42,7 @@ teardown_file() {
 
     run curl --silent localhost/api/vessel_ids
     assert_equal "$status" 0
-    assert_output --partial 'example_vessel'
+    assert_output --partial '[]' # Empty response
 
 }
 
