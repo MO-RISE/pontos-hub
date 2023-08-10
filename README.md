@@ -8,7 +8,25 @@ This repository will describe the technical setup of the datahub.
 
 ## Overview
 
-The datahub is consists of several containerized applications defined through multiple docker-compose files.
+The datahub consists of several containerized applications defined through multiple docker-compose files that together offers the following core functionality:
+
+* A timeseries database ([TimescaleDB](https://github.com/timescale/timescaledb))
+* A REST API for the database ([PostgREST](https://github.com/PostgREST/postgrest))
+* A MQTT API for the database and for (near) real-time data ([EMQX](https://github.com/emqx/emqx))
+* Data ingestion from the MQTT API to the timeseries database ([pontos-data-ingestor](https://github.com/MO-RISE/pontos-data-ingestor))
+
+The core functionality is supported by:
+
+* A reverse proxy ([Traefik](https://github.com/traefik/traefik))
+* Automatically generated REST api documentation ([Swagger-UI](https://github.com/swagger-api/swagger-ui))
+* A JWT-based authn/authz solution (see below for more details)
+
+
+### Authn / Authz
+TODO: Describe this in detail!
+
+
+## Deploy
 
 The datahub can be partially configured using environment variables, for example using a `.env` fil in conjunction with the docker-compose files. An example `.env` file is included in the repository [here](example.env).
 
@@ -19,42 +37,6 @@ To start the datahub in base mode (no TLS, no auth):
 To start the datahub with auth and TLS support:
 
 `docker compose -f docker-compose.base.yml -f docker-compose.auth.yml -f docker-compose.https.yml up -d`
-
-### Database
-
-The datahub relies on a TimescaleDB database setup that is initially (first boot) configured using a set of scripts that can be found in [database/docker-entrypoint-initdb.d](database/docker-entrypoint-initdb.d).
-
-The data is stored in a narrow table format to allow for maximum flexibility regarding data compatibility.
-
-### REST API
-
-The datahub makes use of PostgREST to generate a read-only REST API towards the data stored in the database. Depending on the configuration, the REST API is either open (allows anonymous access) or closed (requires authentication).
-
-An OpenAPI compliant documentation of the REST API is made available and visualized using SwaggerUI.
-
-The REST API is hosted on `/api` and the documentation on `/docs`.
-
-### MQTT interface
-
-The datahub provides an MQTT interface, primarily for publishing data to the hub. It makes use of the mqtt-over-websocket schema to allow for secured remote connections using the same TLS certificate as the REST API.
-
-The MQTT interface is hosted on `/mqtt`.
-
-For some basic example scripts to publish data to the MQTT interface, see the [examples folder](./examples/README.md).
-
-### Data ingestor
-
-See https://github.com/MO-RISE/pontos-data-ingestor
-
-### Authentication and Authorization
-Authentication is performed using JWT tokens by:
-* PostgREST (for reuqests to the API)
-* EMQX (for connections to the MQTT broker)
-respectively.
-
-The reverse proxy (Traefik) does not perform any form of auth (nether authentication nor authorization)
-
-TODO: Describe this more in detail!
 
 
 ## Development
