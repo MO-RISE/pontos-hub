@@ -9,9 +9,25 @@ CREATE OR REPLACE VIEW api_views.vessel_data AS (SELECT * FROM vessel_data.maste
 COMMENT ON SCHEMA api_views IS
   'Welcome to the REST API documentation for PONTOS HUB!
 
-  A good starting point to understand how to use this REST API is to look through this part of the PostgREST documentation: https://postgrest.org/en/stable/api.html#tables-and-views
+  PONTOS HUB stores sensor records in a narrow table format:
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed justo nibh, sollicitudin sit amet ipsum eget, scelerisque posuere neque. Cras tristique massa orci, quis maximus nibh eleifend quis. Phasellus faucibus venenatis libero non accumsan. Morbi tincidunt orci quis arcu lobortis rhoncus. Donec placerat dui vel eros auctor, vel feugiat sem placerat. Mauris a tempor nunc. Suspendisse non justo a nisi dignissim tincidunt. Vestibulum sagittis, erat eu sodales lacinia, eros felis congue lectus, vel tincidunt nunc ipsum ut diam. In lacinia lectus in ante convallis volutpat. Donec feugiat porttitor maximus. Suspendisse ac congue sem. Sed hendrerit, ante quis tincidunt aliquet, sapien massa sagittis lorem, nec venenatis ante mauris sit amet sapien.
+  time (TIMESTAMPZ)   |   vessel_id (TEXT)   |   parameter_id (TEXT)   |   value (TEXT)
+
+  where
+
+  time is the timestamp of the record,
+  vessel_id is a unique identifier for the vessel where the sensor record originates from,
+  parameter_id is a tag as defined and documented at https://pontos.ri.se,
+  value is the actual sensor record
+
+  Get started:
+
+  1. Make sure you have fetched an access token so that you can access the data. If not, see here: https://pontos.ri.se
+  2. Have a look at the examples at https://pontos.ri.se
+  3. For further details about how to use the API, consider looking through this part of the PostgREST documentation: https://postgrest.org/en/stable/api.html#tables-and-views
+
+  We hope you will find this data hub and the data that it offers useful for your use case!
+
 ';
 
 -- Vessel IDs view
