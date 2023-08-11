@@ -155,7 +155,7 @@ services:
 
   # Data ingestor
   ingestor:
-    image: ghcr.io/mo-rise/pontos-data-ingestor:v0.2.1
+    image: ghcr.io/mo-rise/pontos-data-ingestor:v0.2.2
     restart: unless-stopped
     environment:
       - MQTT_BROKER_HOST=emqx
