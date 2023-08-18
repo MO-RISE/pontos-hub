@@ -86,7 +86,6 @@ services:
       POSTGRES_DB: pontos
       POSTGRES_USER: pontos_user
       POSTGRES_PASSWORD: ${PONTOS_DB_PASSWORD}
-      TIMESCALEDB_CHUNK_TIME_INTERVAL: ${PONTOS_DB_INITIAL_CHUNK_TIME_INTERVAL:-'24 hours'}
     volumes:
       # Data volume
       - vol-pg-data:/var/lib/postgresql/data

@@ -14,7 +14,7 @@ setup() {
 
 teardown() {
     docker compose -f docker-compose.base.yml down --remove-orphans
-    docker container prune -f && docker volume prune -f
+    docker container prune -f && docker volume prune -af
     rm -rf "$clone_dir"
     rm -rf "$deploy_dir"
 }

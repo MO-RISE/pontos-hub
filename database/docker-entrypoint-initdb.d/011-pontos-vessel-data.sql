@@ -10,7 +10,7 @@ CREATE TABLE vessel_data.master (
    CONSTRAINT no_duplicates_key UNIQUE(time, vessel_id, parameter_id)
 );
 
-SELECT create_hypertable('vessel_data.master', 'time');
+SELECT create_hypertable('vessel_data.master', 'time', chunk_time_interval => INTERVAL '1 day');
 
 CREATE INDEX ON vessel_data.master (vessel_id, time DESC);
 CREATE INDEX ON vessel_data.master (parameter_id, time DESC);
