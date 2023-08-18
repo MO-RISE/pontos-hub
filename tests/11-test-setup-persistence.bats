@@ -9,7 +9,7 @@ load "./bats-helpers/bats-assert/load"
 
 teardown() {
     docker compose -f docker-compose.base.yml down --remove-orphans
-    docker container prune -f && docker volume prune -f
+    docker container prune -f && docker volume prune -af
 }
 
 @test "BASE: MQTT retain persistence across reboots" {

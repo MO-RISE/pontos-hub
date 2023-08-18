@@ -9,7 +9,7 @@ load "./bats-helpers/bats-assert/load"
 
 teardown() {
     docker compose -f docker-compose.base.yml -f docker-compose.auth.yml down --remove-orphans
-    docker container prune -f && docker volume prune -f
+    docker container prune -f && docker volume prune -af
     git checkout -- broker/acl.conf
 }
 
