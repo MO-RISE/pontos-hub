@@ -12,7 +12,6 @@ CREATE TABLE vessel_data.master (
 
 SELECT create_hypertable('vessel_data.master', 'time');
 
-CREATE INDEX ON vessel_data.master (time DESC);     --Should be enabled by default
 CREATE INDEX ON vessel_data.master (vessel_id, time DESC);
 CREATE INDEX ON vessel_data.master (parameter_id, time DESC);
 CREATE INDEX ON vessel_data.master (vessel_id, parameter_id, time DESC);
