@@ -88,6 +88,7 @@ To generate a valid token for write access to the MQTT API there are two options
     jwt encode --iss=pontos-hub --secret='<your-pontos-hub-JWT-secret>' --sub='<your-preferred-username>'
     ```
   * **Prepend** rule(s) to acl.conf that allows `<your-preferred-username>` to publish to certain topics. For details on the syntax of this file, see https://www.emqx.io/docs/en/v5.1/access-control/authz/file.html.
+    * This repository contains a bash script for easily generating write acl rules with correct syntax that can be added to the `acl.conf` file. See [generate-publish-acl-rules.sh](./scripts/generate_publish_acl_rules.sh).
 
 * Use of in-JWT acl rules (i.e. define custom acl rules within the JWT itself)
   * Encode a new JWT using the following example as a guideline:
