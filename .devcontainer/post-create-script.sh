@@ -9,6 +9,6 @@ wget -q -O - https://github.com/mike-engel/jwt-cli/releases/download/5.0.3/jwt-l
 # Install bats helpers
 [ -d tests/bats-helpers ] && rm -rf tests/bats-helpers && mkdir -p tests/bats-helpers
 
-git clone --depth 1 https://github.com/bats-core/bats-support.git tests/bats-helpers/bats-support || true
-git clone --depth 1 https://github.com/bats-core/bats-assert.git tests/bats-helpers/bats-assert || true
-git clone --depth 1 https://github.com/bats-core/bats-file.git tests/bats-helpers/bats-file || true
+git clone --depth 1 https://github.com/bats-core/bats-support.git tests/bats-helpers/bats-support
+git clone --depth 1 https://github.com/bats-core/bats-assert.git tests/bats-helpers/bats-assert
+git clone --depth 1 https://github.com/bats-core/bats-file.git tests/bats-helpers/bats-file

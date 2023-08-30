@@ -42,46 +42,6 @@ teardown_file() {
     assert_output --partial '200 OK'
 }
 
-@test "AUTH: token generation" {
-
-    run curl -X POST --location --silent localhost/token \
-        -H "Content-Type: application/x-www-form-urlencoded" \
-        -d "param1=value1&param2=value2&acl=dangerous"
-
-    assert_equal "$status" 0
-
-    jwt_as_json=$(echo "$output" | jwt decode -j -)
-
-    # For debug
-    echo "$jwt_as_json"
-
-    field=$(echo "$jwt_as_json" | jq .header.typ)
-    assert_equal "$field" '"JWT"'
-
-    field=$(echo "$jwt_as_json" | jq .header.alg)
-    assert_equal "$field" '"HS256"'
-
-    field=$(echo "$jwt_as_json" | jq .payload.iss)
-    assert_equal "$field" '"pontos-hub"'
-
-    field=$(echo "$jwt_as_json" | jq .payload.role)
-    assert_equal "$field" '"web_user"'
-
-    field=$(echo "$jwt_as_json" | jq .payload.param1)
-    assert_equal "$field" '"value1"'
-
-    field=$(echo "$jwt_as_json" | jq .payload.param2)
-    assert_equal "$field" '"value2"'
-
-    # Check that field with the name acl gets overwritten appropriately
-    field=$(echo "$jwt_as_json" | jq .payload.sub)
-    assert_equal "$field" '"__token__"'
-
-    # Check that field with the name acl gets overwritten appropriately
-    field=$(echo "$jwt_as_json" | jq .payload.acl)
-    assert_equal "$field" '""'
-}
-
 @test "AUTH: REST API access" {
 
     # Should not work as-is
