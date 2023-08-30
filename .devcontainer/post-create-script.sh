@@ -9,6 +9,14 @@ wget -q -O - https://github.com/mike-engel/jwt-cli/releases/download/5.0.3/jwt-l
 # Install bats helpers
 [ -d tests/bats-helpers ] && rm -rf tests/bats-helpers && mkdir -p tests/bats-helpers
 
-git clone --depth 1 https://github.com/bats-core/bats-support.git tests/bats-helpers/bats-support || true
-git clone --depth 1 https://github.com/bats-core/bats-assert.git tests/bats-helpers/bats-assert || true
-git clone --depth 1 https://github.com/bats-core/bats-file.git tests/bats-helpers/bats-file || true
+TARGET_DIRECTORY="tests/bats-helpers/bats-support"
+mkdir -p ${TARGET_DIRECTORY}
+wget -q -O - https://github.com/bats-core/bats-support/archive/refs/tags/v0.3.0.tar.gz | tar xvz --strip-components=1 --overwrite -C ${TARGET_DIRECTORY}
+
+TARGET_DIRECTORY="tests/bats-helpers/bats-assert"
+mkdir -p ${TARGET_DIRECTORY}
+wget -q -O - https://github.com/bats-core/bats-assert/archive/refs/tags/v2.1.0.tar.gz | tar xvz --strip-components=1 --overwrite -C ${TARGET_DIRECTORY}
+
+TARGET_DIRECTORY="tests/bats-helpers/bats-file"
+mkdir -p ${TARGET_DIRECTORY}
+wget -q -O - https://github.com/bats-core/bats-file/archive/refs/tags/v0.4.0.tar.gz | tar xvz --strip-components=1 --overwrite -C ${TARGET_DIRECTORY}

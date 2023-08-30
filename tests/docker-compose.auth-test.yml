@@ -1,0 +1,12 @@
+version: "3.8"
+
+services:
+
+  # JWT issuer
+  jwt:
+    build:
+      context: ./auth
+    restart: unless-stopped
+    environment:
+      - JWT_REQUIRED_CLAIMS=param1
+      - JWT_ALLOWED_CLAIMS=param1,param2,param3,acl
