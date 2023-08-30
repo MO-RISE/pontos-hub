@@ -5,6 +5,8 @@ EXPOSE 8080
 ENV JWT_ISSUER=
 ENV JWT_EXPIRY=
 ENV JWT_SECRET=
+ENV JWT_ALLOWED_CLAIMS=
+ENV JWT_REQUIRED_CLAIMS=
 
 # Install neccessary tools
 RUN apt-get update && apt-get install -y \
@@ -19,4 +21,4 @@ RUN wget -q -O - https://github.com/msoap/shell2http/releases/download/v1.16.0/s
 RUN wget -q -O - https://github.com/mike-engel/jwt-cli/releases/download/5.0.3/jwt-linux.tar.gz | tar xvz -C /usr/local/bin jwt
 
 ADD --chmod=a+x issue_jwt.sh issue_jwt.sh
-CMD ["shell2http", "--500", "--form", "--export-all-vars", "POST:/", "./issue_jwt.sh"]
+CMD ["shell2http", "--cgi", "--show-errors", "--form", "--export-all-vars", "POST:/", "./issue_jwt.sh"]
