@@ -47,5 +47,5 @@ fi
 # Do the actual work
 for vessel in "${vessels[@]}"; do
     topics=$(printf "\"${topic_prefix}/${vessel}/%s${topic_suffix}\"\n" "${parameters[@]}" | paste -sd,)
-    echo "{allow, {user, \"${username}\"}, publish, [${topics}]}."
+    echo "{allow, {user, \"${username}\"}, all, [${topics}]}."
 done
