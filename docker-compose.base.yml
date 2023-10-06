@@ -47,12 +47,12 @@ services:
     environment:
       - EMQX_NAME=pontos-hub
       - EMQX_HOST=127.0.0.1
-      # Retained messages will be persisted to disc to ensure they survive reboots etc
-      - EMQX_RETAINER__BACKEND__STORAGE_TYPE=disc
       # Do NOT allow for subscribers to upgrade QoS
       - EMQX_MQTT__UPGRADE_QOS=false
       # Rate limit the number of published messages per client on the ws listener
-      - EMQX_LISTENERS__WS__DEFAULT__MESSAGES_RATE="1000/s"
+      - EMQX_LISTENERS__WS__DEFAULT__MESSAGES_RATE="5000/s"
+      # Lets disable the force_shutdown feature to avoid kicking out publishers with a high burst rate of messages
+      - EMQX_FORCE_SHUTDOWN__ENABLE=false
       # Avoid queuing QoS0 messages
       - EMQX_MQTT__MQUEUE_STORE_QOS0=false
       # Configure logging
@@ -168,7 +168,7 @@ services:
       - PG_CONNECTION_STRING=postgres://pontos_user:${PONTOS_DB_PASSWORD}@db:5432/pontos
       - PG_TABLE_NAME=vessel_data.master
       - PG_POOL_SIZE=3
-      - PARTITION_SIZE=1000
+      - PARTITION_SIZE=5000
       - PARTITION_TIMEOUT=5
       - DISCARD_NULL_VALUES=true
     depends_on:
