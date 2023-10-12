@@ -10,7 +10,7 @@ load "./bats-helpers/bats-assert/load"
 setup_file() {
     docker pull hivemq/mqtt-cli:4.15.0
     docker compose -f docker-compose.base.yml up -d
-    sleep 10
+    sleep 15
 }
 
 teardown_file() {
@@ -73,6 +73,8 @@ teardown_file() {
 @test "BASE: mqtt editor" {
     # Start a subscriber in the background and let it run for 10s
     docker run --name subscriber --detach --network='host' hivemq/mqtt-cli:4.15.0 sub -v -h localhost -p 80 -ws -ws:path mqtt -t PONTOS_HUB/#
+
+    sleep 2
 
     # Publish an actual payload that should be rewritten by the mqtt editor
     run docker run --network='host' hivemq/mqtt-cli:4.15.0 pub -v -h localhost -p 80 -ws -ws:path mqtt -t PONTOS/test_vessel/test_parameter/1 -m '{"timestamp": 12345678, "value": 42}'
