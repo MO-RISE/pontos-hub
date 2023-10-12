@@ -159,6 +159,7 @@ services:
     environment:
       - MQTT_BROKER_HOST=emqx
       - MQTT_BROKER_PORT=1883
+      - MQTT_USER=__internal__
       - MQTT_CLIENT_ID=
       - MQTT_CLEAN_START=True
       - MQTT_SUBSCRIBE_TOPIC=$$share/ingestors/PONTOS/+/+/+
@@ -185,6 +186,21 @@ services:
         max-size: "10m"
         max-file: "5"
 
+  mqtt-editor:
+    image: ghcr.io/mo-rise/porla-mqtt:v0.2.1
+    restart: unless-stopped
+    depends_on:
+      - emqx
+    deploy:
+      mode: replicated
+      replicas: 3
+    command:
+      [
+        "mqtt --host emqx --port 1883 --user __internal__ subscribe -t '$$share/filterers/PONTOS/+/+/+' --line '{topic} {message}'
+        | sed -u '/^$/d'
+        | sed -u 's/PONTOS/PONTOS_HUB/'
+        | mqtt --host emqx --port 1883 --user __internal__ publish --line '{topic} {message}'"
+      ]
 volumes:
   vol-emqx-data:
   vol-pg-data:

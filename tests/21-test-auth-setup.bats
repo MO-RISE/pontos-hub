@@ -83,7 +83,7 @@ teardown_file() {
     assert_line --partial "failed SUBSCRIBE to TOPIC 'anything/anything/#': Server closed connection without DISCONNECT."
 
     # However, we should be allowed to subscribe to the PONTOS root topic
-    run timeout --preserve-status 5s docker run --network='host' hivemq/mqtt-cli:4.15.0 sub -v -h localhost -p 80 -u '__token__' -pw "$token" -ws -ws:path mqtt -t PONTOS/#
+    run timeout --preserve-status 5s docker run --network='host' hivemq/mqtt-cli:4.15.0 sub -v -h localhost -p 80 -u '__token__' -pw "$token" -ws -ws:path mqtt -t PONTOS_HUB/#
     assert_line --partial 'received CONNACK MqttConnAck{reasonCode=SUCCESS'
     assert_line --partial 'received SUBACK MqttSubAck{reasonCodes=[GRANTED_QOS_2]'
 
@@ -145,3 +145,29 @@ teardown_file() {
     assert_output --partial 'test_vessel'
 }
 
+
+@test "AUTH: mqtt editor" {
+
+    # Lets generate a token for the publisher
+    publisher_token=$(jwt encode --sub=__token__ --secret="$PONTOS_JWT_SECRET" '{"acl":{"pub": ["PONTOS/test_vessel/test_parameter/+"]}}')
+
+    # And fetch one for the subscriber
+    run curl -X POST --location --silent localhost/token
+    assert_equal "$status" 0
+    subscriber_token="$output"
+
+    # Start a subscriber in the background and let it run for 10s
+    docker run --name subscriber --detach --network='host' hivemq/mqtt-cli:4.15.0 sub -v -h localhost -p 80 -u '__token__' -pw "$subscriber_token" -ws -ws:path mqtt -t PONTOS_HUB/#
+
+    # Publish an actual payload that should be rewritten by the mqtt editor
+    run docker run --network='host' hivemq/mqtt-cli:4.15.0 pub -v -h localhost -p 80 -u '__token__' -pw "$publisher_token" -ws -ws:path mqtt -t PONTOS/test_vessel/test_parameter/1 -m '{"timestamp": 12345678, "value": 42}'
+    assert_line --partial 'received CONNACK MqttConnAck{reasonCode=SUCCESS'
+    assert_line --partial 'received PUBLISH acknowledgement'
+
+    sleep 1
+
+    run docker logs subscriber
+    assert_line --partial '{"timestamp": 12345678, "value": 42}'
+
+    docker kill subscriber
+}
