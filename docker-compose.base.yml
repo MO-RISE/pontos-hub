@@ -50,7 +50,7 @@ services:
       # Do NOT allow for subscribers to upgrade QoS
       - EMQX_MQTT__UPGRADE_QOS=false
       # Rate limit the number of published messages per client on the ws listener
-      - EMQX_LISTENERS__WS__DEFAULT__MESSAGES_RATE="5000/s"
+      - EMQX_LISTENERS__WS__DEFAULT__MESSAGES_RATE="2000/s"
       # Lets disable the force_shutdown feature to avoid kicking out publishers with a high burst rate of messages
       - EMQX_FORCE_SHUTDOWN__ENABLE=false
       # Avoid queuing QoS0 messages
