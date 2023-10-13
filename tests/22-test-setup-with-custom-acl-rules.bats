@@ -28,7 +28,7 @@ teardown() {
 
     # Start base setup
     docker compose -f docker-compose.base.yml -f docker-compose.auth.yml up -d --build
-    sleep 10
+    sleep 15
 
     # Lets generate a token by ourselves with subject 'test_user'
     token=$(jwt encode --sub=test_user --secret="$PONTOS_JWT_SECRET")
