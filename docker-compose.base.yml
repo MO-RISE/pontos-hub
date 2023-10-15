@@ -111,6 +111,7 @@ services:
       - PGRST_OPENAPI_SERVER_PROXY_URI=http://localhost/api
       - PGRST_DB_SCHEMAS=api_views
       - PGRST_DB_ANON_ROLE=web_user # Has read permissions!
+      - PGRST_DB_MAX_ROWS=1000000 # Limiting the maximum number of rows for a single query to 1M
     depends_on:
       - db
     labels:
