@@ -21,6 +21,22 @@ The core functionality is supported by:
 * Automatically generated REST api documentation ([Swagger-UI](https://github.com/swagger-api/swagger-ui))
 * A JWT-based authn/authz solution (see below for more details)
 
+## Schematic
+
+![](./pontos-hub.drawio.svg)
+
+## Specifics
+
+### Data format
+The hub have some (not a lot) of expectations on the data format that flows in the system:
+* The database is configured to use a narrow table setup according to
+  ```
+  time (TIMESTAMPZ)   |   vessel_id (TEXT)   |   parameter_id (TEXT)   |   value (TEXT)
+  ```
+* The data ingestor is very flexible in its configuration about how to map data from the MQTT world to the database layout, see https://github.com/MO-RISE/pontos-data-ingestor#specifics. In essence, the only hard requirement is that the payloads are expected to be vaild `JSON`.
+
+#### Pontos project specific data format
+Within the Pontos project, a more specific data format has been agreed upon. This data format is described more in detail [here](https://github.com/MO-RISE/pontos-data-format).
 
 ### Authn / Authz
 The datahub is developed with the primary aim of being an open datahub where anyone can publicly access data. This, however, does not entirely remove the need for a software solution dealing with Authentication / Authorization, for the following anticipated reasons:
@@ -41,6 +57,7 @@ The MQTT API towards the datahub is provided by [EMQX](https://www.emqx.io/docs/
 * https://www.emqx.io/docs/en/v5.1/access-control/authn/jwt.html#jwt-authentication
 
 The MQTT API for the datahub is configured such that:
+* There are two root namespaces: `PONTOS` (for incoming data) and `PONTOS_HUB` (for public access) in the mqtt topic structure. This makes it possible to potentially filter data that should not be publicly accessible. By default, no filtering is done between, i.e. all data published to the `PONTOS` root will be available on the `PONTOS_HUB` root.
 * Login credentials are required when connecting to the broker (see [here](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901043) for details)
     * The JWT should be passed in the field for the password.
     * The `sub` claim within the JWT is verified to match the username used for login. This authenticates the username. I.e. the username is as expected and not forged.
@@ -66,6 +83,9 @@ would result in a JWT with, among others, the following claims in the payload:
 "param2": "value2",
 ...
 ```
+
+Options are available for requiring and/or disallowing certain claims in the `POST` request. For details, see [here](./tests/20-test-issue-jwt.bats) and [here](./tests/docker-compose.auth-test.yml).
+
 In addition to the user-configurable claims, certain pre-defined claims (see [docker-compose.auth.yml](docker-compose.auth.yml)) are enforced:
 * `role`: `web_user`
 * `sub`: `__token__`
