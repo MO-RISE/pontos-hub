@@ -1,0 +1,11 @@
+version: "3.8"
+
+services:
+
+  # Broker
+  emqx:
+    environment:
+      - EMQX_REWRITE__1__ACTION=publish
+      - EMQX_REWRITE__1__SOURCE_TOPIC=PONTOS/#
+      - EMQX_REWRITE__1__DEST_TOPIC=PONTOS_INGRESS/$$1
+      - EMQX_REWRITE__1__RE=^PONTOS/(.+)$$

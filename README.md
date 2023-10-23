@@ -27,16 +27,22 @@ The core functionality is supported by:
 
 ## Specifics
 
+### Data flow
+
+![](./data-flow.drawio.svg)
+
 ### Data format
 The hub have some (not a lot) of expectations on the data format that flows in the system:
 * The database is configured to use a narrow table setup according to
   ```
   time (TIMESTAMPZ)   |   vessel_id (TEXT)   |   parameter_id (TEXT)   |   value (TEXT)
   ```
-* The data ingestor is very flexible in its configuration about how to map data from the MQTT world to the database layout, see https://github.com/MO-RISE/pontos-data-ingestor#specifics. In essence, the only hard requirement is that the payloads are expected to be vaild `JSON`. 
+* The data ingestor is very flexible in its configuration about how to map data from the MQTT world to the database layout, see https://github.com/MO-RISE/pontos-data-ingestor#specifics. In essence, the only hard requirement is that the payloads are expected to be vaild `JSON`.
 
 #### Pontos project specific data format
-Within the Pontos project, a more specific data format has been agreed upon, the Pontos Data Format. This data format is described more in detail [here](https://github.com/MO-RISE/pontos-data-format). **NOTE:** The default configuration of the data ingestor setup for pontos hub is according to the Pontos Data Format.
+Within the Pontos project, a more specific data format has been agreed upon, the Pontos Data Format. This data format is described more in detail [here](https://github.com/MO-RISE/pontos-data-format).
+
+**NOTE:** The default configuration of pontos-hub is according to the Pontos Data Format.
 
 ### Authn / Authz
 The datahub is developed with the primary aim of being an open datahub where anyone can publicly access data. This, however, does not entirely remove the need for a software solution dealing with Authentication / Authorization, for the following anticipated reasons:
@@ -64,7 +70,7 @@ The MQTT API for the datahub is configured such that:
 * Authorization is enforced through access control lists (acl) that may be provided in two ways:
     * As a separate file on disk (see https://www.emqx.io/docs/en/v5.1/access-control/authz/file.html)
     * As part of the JWT `acl` claim (see https://www.emqx.io/docs/en/v5.1/access-control/authn/jwt.html#authorization-list-optional)
-* A default acl is bundled with the datahub, see [`acl.conf`](./broker/acl.conf) which gives read access to `PONTOS/#` for everyone.
+* A default acl is bundled with the datahub, see [`acl.conf`](./broker/acl.conf) which gives read access to `PONTOS_EGRESS/#` for everyone.
 
 
 #### Token generation for read access to the datahub (both via MQTT and REST APIs)
@@ -113,9 +119,9 @@ To generate a valid token for write access to the MQTT API there are two options
 * Use of in-JWT acl rules (i.e. define custom acl rules within the JWT itself)
   * Encode a new JWT using the following example as a guideline:
     ```
-    jwt encode --iss=pontos-hub --secret='<your-pontos-hub-JWT-secret>' --sub='<your-preferred-username>' '{"acl":{"pub":["PONTOS/<vessel_id>/#"]}}'
+    jwt encode --iss=pontos-hub --secret='<your-pontos-hub-JWT-secret>' --sub='<your-preferred-username>' '{"acl":{"pub":["PONTOS_INGRESS/<vessel_id>/#"]}}'
     ```
-    Which will allow `<your-preferred-username>` to publish data to topics matching `PONTOS/<vessel_id>/#`.
+    Which will allow `<your-preferred-username>` to publish data to topics matching `PONTOS_INGRESS/<vessel_id>/#`.
 
 
 ## Deploy

@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Declarations
-topic_prefix='PONTOS'
+topic_prefix='PONTOS_INGRESS'
 topic_suffix=
 username=
 vessels=()
@@ -12,7 +12,7 @@ print_usage() {
     echo "Usage: script_name [-u username] [-t prefix] [-v vessel...] [-p parameter...]"
     echo "Options:"
     echo "  -u username        Set the username"
-    echo "  -t topic prefix    Set the topic prefix to use (default: PONTOS)"
+    echo "  -t topic prefix    Set the topic prefix to use (default: PONTOS_INGRESS)"
     echo "  -s topic suffix    Set the topic suffix to use (default: )"
     echo "  -v vessel          Specify a vessel (multiple occurrences allowed)"
     echo "  -p parameter       Specify a parameter (multiple occurrences allowed)"

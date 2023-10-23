@@ -163,9 +163,9 @@ services:
       - MQTT_USER=__internal__
       - MQTT_CLIENT_ID=
       - MQTT_CLEAN_START=True
-      - MQTT_SUBSCRIBE_TOPIC=$$share/ingestors/PONTOS/+/+/+
+      - MQTT_SUBSCRIBE_TOPIC=$$share/ingestors/PONTOS_INGRESS/+/+/+
       - MQTT_SUBSCRIBE_TOPIC_QOS=0
-      - TOPIC_PARSER_FORMAT=PONTOS/{vessel_id:w}/{tag:w}/{index:d}
+      - TOPIC_PARSER_FORMAT=PONTOS_INGRESS/{vessel_id:w}/{tag:w}/{index:d}
       - PAYLOAD_MAP_FORMAT=timestamp=timestamp,value=value
       - PG_CONNECTION_STRING=postgres://pontos_user:${PONTOS_DB_PASSWORD}@db:5432/pontos
       - PG_TABLE_NAME=vessel_data.master
@@ -197,10 +197,7 @@ services:
       replicas: 3
     command:
       [
-        "mqtt --host emqx --port 1883 --user __internal__ subscribe -t '$$share/filterers/PONTOS/+/+/+' --line '{topic} {message}'
-        | sed -u '/^$/d'
-        | sed -u 's/PONTOS/PONTOS_HUB/'
-        | mqtt --host emqx --port 1883 --user __internal__ publish --line '{topic} {message}'"
+        "mqtt --host emqx --port 1883 --user __internal__ subscribe -t '$$share/filterers/PONTOS_INGRESS/+/+/+' --line '{topic} {message}' | sed -u '/^$/d' | sed -u 's/PONTOS_INGRESS/PONTOS_EGRESS/' | mqtt --host emqx --port 1883 --user __internal__ publish --line '{topic} {message}'"
       ]
 volumes:
   vol-emqx-data:
