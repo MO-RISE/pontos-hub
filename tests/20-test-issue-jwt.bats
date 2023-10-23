@@ -9,7 +9,7 @@ load "./bats-helpers/bats-assert/load"
 
 setup_file() {
     docker pull hivemq/mqtt-cli:4.15.0
-    docker compose -f docker-compose.base.yml -f docker-compose.auth.yml -f tests/docker-compose.auth-test.yml up -d --build
+    docker compose -f docker-compose.base.yml -f docker-compose.auth.yml -f tests/docker-compose.jwt-config.yml up -d --build
     sleep 15
 }
 
