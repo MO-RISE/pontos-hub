@@ -192,12 +192,11 @@ services:
     restart: unless-stopped
     depends_on:
       - emqx
-    deploy:
-      mode: replicated
-      replicas: 3
     command:
       [
-        "mqtt --host emqx --port 1883 --user __internal__ subscribe -t '$$share/filterers/PONTOS_INGRESS/+/+/+' --line '{topic} {message}' | sed -u '/^$/d' | sed -u 's/PONTOS_INGRESS/PONTOS_EGRESS/' | mqtt --host emqx --port 1883 --user __internal__ publish --line '{topic} {message}'"
+        "mqtt --host emqx --port 1883 --user __internal__ subscribe -t '$$share/filterers/PONTOS_INGRESS/+/+/+' --line '{topic} {message}'
+        | sed -u '/^$/d' | sed -u 's/PONTOS_INGRESS/PONTOS_EGRESS/' 
+        | mqtt --host emqx --port 1883 --user __internal__ publish --line '{topic} {message}'"
       ]
 volumes:
   vol-emqx-data:
