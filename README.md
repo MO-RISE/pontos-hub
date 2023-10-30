@@ -37,7 +37,7 @@ The hub have some (not a lot) of expectations on the data format that flows in t
   ```
   time (TIMESTAMPZ)   |   vessel_id (TEXT)   |   parameter_id (TEXT)   |   value (TEXT)
   ```
-* The data ingestor is very flexible in its configuration about how to map data from the MQTT world to the database layout, see https://github.com/MO-RISE/pontos-data-ingestor#specifics. In essence, the only hard requirement is that the payloads are expected to be vaild `JSON`.
+* The data ingestor is very flexible in its configuration about how to map data from the MQTT world to the database layout, see https://github.com/MO-RISE/pontos-data-ingestor#specifics. In essence, the only hard requirement is that the payloads are expected to be valid `JSON`.
 
 #### Pontos project specific data format
 Within the Pontos project, a more specific data format has been agreed upon, the Pontos Data Format. This data format is described more in detail [here](https://github.com/MO-RISE/pontos-data-format).
