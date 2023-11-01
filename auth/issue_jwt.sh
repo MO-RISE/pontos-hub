@@ -1,6 +1,11 @@
 #! /bin/bash
 set -euo pipefail
 
+# Logging function (to stderr)
+log(){
+    >&2 echo "--- $(date --rfc-3339) - $*"
+}
+
 # Define a function to create a JSON object from all available variables matching 'prefix'
 jsonify_prefixed_variables() {
     # Read the prefix to use
@@ -86,7 +91,10 @@ fi
 env_json=$(jsonify_prefixed_variables "JWT_CLAIM_")
 
 # Merged json (Note the order! Later entries overwrites earlier ones!)
-merged_json=$(echo "$form_data_json $env_json" | jq -s add | jq 'to_entries | reduce .[] as $item ({}; .[$item.key] = $item.value)')
+merged_json=$(echo "$form_data_json $env_json" | jq -s add | jq -c 'to_entries | reduce .[] as $item ({}; .[$item.key] = $item.value)')
+
+# Log the final token payload (claims)
+log "$merged_json"
 
 # Create token and return it
 token=$(
@@ -96,5 +104,8 @@ token=$(
         --secret="$JWT_SECRET" \
         "$merged_json"
     )
+
+# And log the token
+log "$token"
 
 echo "$token"

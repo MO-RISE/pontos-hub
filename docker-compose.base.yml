@@ -4,7 +4,7 @@ services:
 
   # Reverse proxy
   traefik:
-    image: "traefik:v2.10.1"
+    image: "traefik:v2.10.5"
     restart: unless-stopped
 
     # Static configuration of Traefik
@@ -42,7 +42,7 @@ services:
 
   # MQTT broker
   emqx:
-    image: emqx/emqx:5.1.0
+    image: emqx/emqx:5.3.0
     restart: unless-stopped
     environment:
       - EMQX_NAME=pontos-hub
@@ -104,7 +104,7 @@ services:
 
   # REST api
   api:
-    image: postgrest/postgrest:v11.1.0
+    image: postgrest/postgrest:v11.2.2
     restart: unless-stopped
     environment:
       - PGRST_DB_URI=postgres://authenticator:${PONTOS_DB_PASSWORD}@db:5432/pontos
@@ -133,7 +133,7 @@ services:
 
   # Swagger api docs
   swagger:
-    image: swaggerapi/swagger-ui:v5.1.0
+    image: swaggerapi/swagger-ui:v5.9.1
     restart: unless-stopped
     environment:
       - API_URL=/api
