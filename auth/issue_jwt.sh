@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Logging function (to stderr)
 log(){
-    >&2 echo "--- $(date --rfc-3339) - $*"
+    >&2 echo "--- $(date --rfc-3339=ns) - $*"
 }
 
 # Define a function to create a JSON object from all available variables matching 'prefix'
