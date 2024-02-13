@@ -172,7 +172,6 @@ services:
       - PG_POOL_SIZE=3
       - PARTITION_SIZE=5000
       - PARTITION_TIMEOUT=5
-      - DISCARD_NULL_VALUES=true
     depends_on:
       - emqx
       - db

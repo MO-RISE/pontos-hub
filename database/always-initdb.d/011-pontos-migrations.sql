@@ -19,4 +19,16 @@ THEN
 END IF;
 END $$;
 
+-- To v1.0.2
+DO $$ BEGIN
+IF _v.try_register_patch('v1.0.2', NULL, NULL)
+THEN
+
+    -- Drop NOT NULL constraint on column 'value'
+    ALTER TABLE vessel_data.master ALTER value DROP NOT NULL;
+
+END IF;
+END $$;
+
+
 COMMIT;
