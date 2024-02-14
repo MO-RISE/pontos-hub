@@ -70,6 +70,19 @@ teardown_file() {
     assert_output --partial 'test_vessel'
 }
 
+@test "BASE: mqtt ingestion of null values" {
+    # Publish an actual payload (containing a null value) that should be picked up by the ingestor and check that it gets written to the database
+    run docker run --network='host' hivemq/mqtt-cli:4.15.0 pub -v -h localhost -p 80 -ws -ws:path mqtt -t PONTOS_INGRESS/test_vessel/test_parameter/1 -m '{"timestamp": 12345679, "value": null}'
+    assert_line --partial 'received PUBLISH acknowledgement'
+
+    sleep 6
+
+    run curl --silent localhost/api/vessel_data
+    assert_equal "$status" 0
+    assert_output --partial '"value":null'
+}
+
+
 @test "BASE: mqtt editor" {
     # Start a subscriber in the background and let it run for 10s
     docker run --name subscriber --detach --network='host' hivemq/mqtt-cli:4.15.0 sub -v -h localhost -p 80 -ws -ws:path mqtt -t PONTOS_EGRESS/#
