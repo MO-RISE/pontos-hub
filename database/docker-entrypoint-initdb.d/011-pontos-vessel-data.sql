@@ -6,7 +6,7 @@ CREATE TABLE vessel_data.master (
    time             TIMESTAMPTZ                 NOT NULL,
    vessel_id        TEXT                        NOT NULL,
    parameter_id     TEXT                        NOT NULL,
-   value            TEXT                        NOT NULL,
+   value            TEXT,
    CONSTRAINT no_duplicates_key UNIQUE(time, vessel_id, parameter_id)
 );
 
