@@ -63,7 +63,7 @@ The MQTT API towards the datahub is provided by [EMQX](https://www.emqx.io/docs/
 * https://www.emqx.io/docs/en/v5.1/access-control/authn/jwt.html#jwt-authentication
 
 The MQTT API for the datahub is configured such that:
-* There are two root namespaces: `PONTOS` (for incoming data) and `PONTOS_HUB` (for public access) in the mqtt topic structure. This makes it possible to potentially filter data that should not be publicly accessible. By default, no filtering is done between, i.e. all data published to the `PONTOS` root will be available on the `PONTOS_HUB` root.
+* There are two root namespaces: `PONTOS_INGRESS` (for incoming data) and `PONTOS_EGRESS` (for public access) in the mqtt topic structure. This makes it possible to potentially filter data that should not be publicly accessible. By default, no filtering is done between, i.e. all data published to the `PONTOS_INGRESS` root will be available on the `PONTOS_EGRESS` root.
 * Login credentials are required when connecting to the broker (see [here](https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901043) for details)
     * The JWT should be passed in the field for the password.
     * The `sub` claim within the JWT is verified to match the username used for login. This authenticates the username. I.e. the username is as expected and not forged.
