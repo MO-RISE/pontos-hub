@@ -1,7 +1,6 @@
 version: "3.8"
 
 services:
-
   # Reverse proxy
   traefik:
     image: "traefik:v2.10.5"
@@ -94,6 +93,8 @@ services:
       - ./database/docker-entrypoint-initdb.d/:/docker-entrypoint-initdb.d/
       # Initialization scripts (run on every start!)
       - ./database/always-initdb.d/:/always-initdb.d/
+    ports:
+      - "5432:5432"
     entrypoint: "custom-entrypoint.sh"
 
     logging:
@@ -191,11 +192,10 @@ services:
     restart: unless-stopped
     depends_on:
       - emqx
-    command:
-      [
+    command: [
         "mqtt --host emqx --port 1883 --user __internal__ subscribe -t '$$share/filterers/PONTOS_INGRESS/+/+/+' --line '{topic} {message}'
-        | sed -u '/^$/d' | sed -u 's/PONTOS_INGRESS/PONTOS_EGRESS/' 
-        | mqtt --host emqx --port 1883 --user __internal__ publish --line '{topic} {message}'"
+        | sed -u '/^$/d' | sed -u 's/PONTOS_INGRESS/PONTOS_EGRESS/'
+        | mqtt --host emqx --port 1883 --user __internal__ publish --line '{topic} {message}'",
       ]
 volumes:
   vol-emqx-data:
