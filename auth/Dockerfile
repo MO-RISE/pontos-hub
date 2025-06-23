@@ -1,3 +1,5 @@
+# syntax=docker/dockerfile:labs
+
 FROM ubuntu
 
 EXPOSE 8080
