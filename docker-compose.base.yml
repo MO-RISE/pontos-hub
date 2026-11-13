@@ -80,6 +80,10 @@ services:
   db:
     image: timescale/timescaledb:2.11.0-pg15
     restart: unless-stopped
+    # Docker's default /dev/shm (64 MB) is too small for PostgreSQL's parallel
+    # query workers, causing "could not resize shared memory segment" (53100)
+    # errors on larger aggregate queries.
+    shm_size: ${PONTOS_DB_SHM_SIZE:-1g}
     environment:
       POSTGRES_DB: pontos
       POSTGRES_USER: pontos_user
