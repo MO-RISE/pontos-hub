@@ -7,7 +7,10 @@ on:
 
 jobs:
   bats:
-    runs-on: ubuntu-latest
+    # Pinned: ubuntu-latest (26.04) has no legacy iptables support in its kernel,
+    # but the docker-in-docker feature selects iptables-legacy inside the jammy
+    # dev container, so the inner dockerd fails to create its NAT chain.
+    runs-on: ubuntu-24.04
     steps:
 
       - name: Checkout (GitHub)
