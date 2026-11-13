@@ -19,4 +19,14 @@ jobs:
         uses: devcontainers/ci@v0.3
         with:
           runCmd: |
+            # The docker-in-docker feature starts dockerd in the background when
+            # the container starts; wait for it before running the tests and show
+            # its log if it never comes up.
+            for i in $(seq 1 60); do docker info > /dev/null 2>&1 && break; sleep 1; done
+            if ! docker info > /dev/null 2>&1; then
+              echo "::error::Docker daemon did not start within 60s"
+              cat /tmp/dockerd.log || true
+              exit 1
+            fi
+            echo "Docker daemon ready after ${i}s"
             bats tests/
