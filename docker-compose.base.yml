@@ -3,7 +3,7 @@ version: "3.8"
 services:
   # Reverse proxy
   traefik:
-    image: "traefik:v2.10.5"
+    image: "traefik:v3.7.19"
     restart: unless-stopped
 
     # Static configuration of Traefik

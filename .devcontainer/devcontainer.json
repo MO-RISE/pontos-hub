@@ -5,11 +5,7 @@
     // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
     "image": "mcr.microsoft.com/devcontainers/base:jammy",
     "features": {
-        // Pinned to Docker 28: Docker 29 rejects Docker API versions below 1.40,
-        // which breaks the Docker provider in traefik v2.10.x (it uses API 1.24).
-        "ghcr.io/devcontainers/features/docker-in-docker:2": {
-            "version": "28.5.2"
-        },
+        "ghcr.io/devcontainers/features/docker-in-docker:2": {},
         "ghcr.io/devcontainers/features/python:1": {},
         "ghcr.io/edouard-lopez/devcontainer-features/bats:0": {}
     },
